@@ -127,6 +127,10 @@ For more details on how to extend this functionality, see the [Payload Access Co
 
 Registered users can log in to view their order history, manage saved addresses, and track ongoing orders directly from their account dashboard.
 
+### Email delivery
+
+Password reset and other transactional emails require SMTP configuration. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, and `EMAIL_FROM_ADDRESS` in `.env`, then restart the development server. The sender address must be authorized by your email provider. For Gmail, use an app password rather than your account password.
+
 ## Guests
 
 Guest checkout allows users to complete purchases without creating an account. When a guest places an order:

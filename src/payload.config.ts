@@ -1,15 +1,16 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import {
-  BoldFeature,
-  EXPERIMENTAL_TableFeature,
-  IndentFeature,
-  ItalicFeature,
-  LinkFeature,
-  OrderedListFeature,
-  UnderlineFeature,
-  UnorderedListFeature,
-  lexicalEditor,
+    BoldFeature,
+    EXPERIMENTAL_TableFeature,
+    IndentFeature,
+    ItalicFeature,
+    LinkFeature,
+    OrderedListFeature,
+    UnderlineFeature,
+    UnorderedListFeature,
+    lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -25,6 +26,33 @@ import { plugins } from './plugins'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const smtpHost = process.env.SMTP_HOST
+const emailFromAddress = process.env.EMAIL_FROM_ADDRESS
+
+if (smtpHost && !emailFromAddress) {
+  throw new Error('EMAIL_FROM_ADDRESS must be set when SMTP_HOST is configured.')
+}
+
+const emailAdapter =
+  smtpHost && emailFromAddress
+    ? nodemailerAdapter({
+        defaultFromAddress: emailFromAddress,
+        defaultFromName: process.env.EMAIL_FROM_NAME || 'Payload Ecommerce',
+        transportOptions: {
+          host: smtpHost,
+          port: Number(process.env.SMTP_PORT || 587),
+          secure: process.env.SMTP_SECURE === 'true',
+          ...(process.env.SMTP_USER && process.env.SMTP_PASS
+            ? {
+                auth: {
+                  user: process.env.SMTP_USER,
+                  pass: process.env.SMTP_PASS,
+                },
+              }
+            : {}),
+        },
+      })
+    : undefined
 
 export default buildConfig({
   admin: {
@@ -42,6 +70,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URL || '',
   }),
+  email: emailAdapter,
   editor: lexicalEditor({
     features: () => {
       return [
@@ -77,7 +106,6 @@ export default buildConfig({
       ]
     },
   }),
-  //email: nodemailerAdapter(),
   endpoints: [],
   globals: [Header, Footer],
   plugins,
