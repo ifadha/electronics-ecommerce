@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "esModuleInterop": true,
-    "target": "es2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
-    "strictNullChecks": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
     "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "sourceMap": true,
     "isolatedModules": true,
     "plugins": [
       {
@@ -23,21 +24,22 @@
       }
     ],
     "paths": {
-      "@payload-config": ["./src/payload.config.ts"],
-      "react": ["./node_modules/@types/react"],
-      "@/*": ["./src/*"],
-      "@/payload-types": ["./src/payload-types.ts"]
+      "react": [
+        "./node_modules/@types/react"
+      ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "redirects.js",
-    "next.config.js",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "ts-node": {
+    "transpileOnly": true,
+    "swc": true
+  }
 }
