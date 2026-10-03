@@ -3,23 +3,30 @@ import React, { Fragment, useCallback, useState } from 'react'
 export const SeedButton: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [seeded, setSeeded] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleClick = useCallback(
-    async e => {
+    async (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault()
       if (loading || seeded) return
 
       setLoading(true)
 
-      setTimeout(async () => {
-        try {
-          await fetch('/api/seed')
-          setSeeded(true)
-        } catch (err) {
-          setError(err)
+      try {
+        const response = await fetch('/api/seed')
+        const result: { success?: boolean; error?: string } = await response.json()
+
+        if (!response.ok || result.success !== true) {
+          throw new Error(result.error || `Seeding failed with status ${response.status}.`)
         }
-      }, 1000)
+
+        setSeeded(true)
+        setError(null)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred while seeding.')
+      } finally {
+        setLoading(false)
+      }
     },
     [loading, seeded],
   )

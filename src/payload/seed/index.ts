@@ -89,18 +89,21 @@ export const seed = async (payload: Payload): Promise<void> => {
       collection: 'categories',
       data: {
         title: 'Apparel',
+        media: image1Doc.id,
       },
     }),
     await payload.create({
       collection: 'categories',
       data: {
         title: 'E-books',
+        media: image2Doc.id,
       },
     }),
     await payload.create({
       collection: 'categories',
       data: {
         title: 'Online courses',
+        media: image3Doc.id,
       },
     }),
   ])
