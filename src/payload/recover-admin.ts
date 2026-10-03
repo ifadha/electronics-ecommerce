@@ -117,7 +117,9 @@ const recoverAdmin = async (): Promise<void> => {
           (role): role is 'admin' | 'customer' => role === 'admin' || role === 'customer',
         )
       : []
-    const adminRoles = roles.includes('admin') ? roles : [...roles, 'admin']
+    const adminRoles: Array<'admin' | 'customer'> = roles.includes('admin')
+      ? roles
+      : [...roles, 'admin']
 
     await payload.update({
       collection: 'users',

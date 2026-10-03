@@ -33,10 +33,11 @@ export type Props = {
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
   categories?: ArchiveBlockProps['categories']
+  sort?: string
 }
 
 export const CollectionArchive: React.FC<Props> = props => {
-  const { categoryFilters, sort } = useFilter()
+  const { categoryFilters, sort: filterSort } = useFilter()
 
   const {
     className,
@@ -46,6 +47,7 @@ export const CollectionArchive: React.FC<Props> = props => {
     limit = 10,
     populatedDocs,
     populatedDocsTotal,
+    sort = filterSort,
   } = props
 
   const [results, setResults] = useState<Result>({
