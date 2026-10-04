@@ -1,7 +1,6 @@
 import type { Header as HeaderType } from '../../../payload/payload-types'
 import { fetchHeader } from '../../_api/fetchGlobals'
 import HeaderComponent from './HeaderComponent'
-import MobileNav from './MobileNav'
 
 export async function Header() {
   let header: HeaderType | null = null
@@ -12,10 +11,5 @@ export async function Header() {
     console.log(error)
   }
 
-  return (
-    <>
-      <HeaderComponent header={header} />
-      <MobileNav header={header} />
-    </>
-  )
+  return <HeaderComponent header={header} />
 }
