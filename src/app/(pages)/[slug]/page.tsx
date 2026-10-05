@@ -1,13 +1,15 @@
 import React from 'react'
 import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { Category, Page } from '../../../payload/payload-types'
+import { Category, Page, Product } from '../../../payload/payload-types'
 import { staticHome } from '../../../payload/seed/home-static'
 import { fetchDoc } from '../../_api/fetchDoc'
-import { fetchDocs } from '../../_api/fetchDocs'
+import { fetchDocs, fetchFeaturedProducts } from '../../_api/fetchDocs'
 import { Blocks } from '../../_components/Blocks'
+import { Card } from '../../_components/Card'
 import { Gutter } from '../../_components/Gutter'
 import { Hero } from '../../_components/Hero'
 import { generateMeta } from '../../_utilities/generateMeta'
@@ -30,6 +32,7 @@ export default async function Page({ params: { slug = 'home' } }) {
 
   let page: Page | null = null
   let categories: Category[] | null = null
+  let featuredProducts: Product[] = []
 
   try {
     page = await fetchDoc<Page>({
@@ -46,11 +49,23 @@ export default async function Page({ params: { slug = 'home' } }) {
     // console.error(error)
   }
 
-  // if no `home` page exists, render a static one using dummy content
-  // you should delete this code once you have a home page in the CMS
-  // this is really only useful for those who are demoing this template
+  if (slug === 'home') {
+    try {
+      featuredProducts = await fetchFeaturedProducts()
+    } catch (error) {
+      console.error('Error fetching featured products:', error)
+    }
+  }
+
+  // Keep the public storefront useful until a published home page is available.
   if (!page && slug === 'home') {
-    page = staticHome
+    page = {
+      ...staticHome,
+      hero: {
+        ...staticHome.hero,
+        media: featuredProducts[0]?.meta?.image ?? '',
+      },
+    }
   }
 
   if (!page) {
@@ -67,6 +82,19 @@ export default async function Page({ params: { slug = 'home' } }) {
 
           <Gutter className={classes.home}>
             <Categories categories={categories} />
+            {featuredProducts.length > 0 && (
+              <section className={classes.featuredProducts}>
+                <div className={classes.sectionHeading}>
+                  <h2>Featured products</h2>
+                  <Link href="/products">Shop all</Link>
+                </div>
+                <div className={classes.productGrid}>
+                  {featuredProducts.map(product => (
+                    <Card key={product.id} relationTo="products" doc={product} />
+                  ))}
+                </div>
+              </section>
+            )}
             <Promotion />
           </Gutter>
         </section>

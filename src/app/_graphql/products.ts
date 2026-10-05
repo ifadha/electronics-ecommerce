@@ -12,6 +12,28 @@ export const PRODUCTS = `
   }
 `
 
+export const FEATURED_PRODUCTS = `
+  query FeaturedProducts {
+    Products(limit: 4, sort: "-createdAt") {
+      docs {
+        id
+        title
+        slug
+        priceJSON
+        meta {
+          description
+          image {
+            alt
+            width
+            height
+            url
+          }
+        }
+      }
+    }
+  }
+`
+
 export const PRODUCT = `
   query Product($slug: String, $draft: Boolean) {
     Products(where: { slug: { equals: $slug}}, limit: 1, draft: $draft) {

@@ -10,3 +10,34 @@
     gap: 60px;
   }
 }
+
+.featuredProducts {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px;
+
+  @include mid-break {
+    gap: 20px;
+  }
+
+  @include small-break {
+    grid-template-columns: 1fr;
+  }
+}

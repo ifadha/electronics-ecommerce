@@ -1,10 +1,10 @@
 import type { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
-import type { Config } from '../../payload/payload-types'
+import type { Config, Product } from '../../payload/payload-types'
 import { CATEGORIES } from '../_graphql/categories'
 import { ORDERS } from '../_graphql/orders'
 import { PAGES } from '../_graphql/pages'
-import { PRODUCTS } from '../_graphql/products'
+import { FEATURED_PRODUCTS, PRODUCTS } from '../_graphql/products'
 import { GRAPHQL_API_URL } from './shared'
 import { payloadToken } from './token'
 
@@ -60,4 +60,25 @@ export const fetchDocs = async <T>(
     })
 
   return docs
+}
+
+export const fetchFeaturedProducts = async (): Promise<Product[]> => {
+  const response = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+    next: { tags: ['products'] },
+    body: JSON.stringify({
+      query: FEATURED_PRODUCTS,
+    }),
+  })
+  const result = await response.json()
+
+  if (!response.ok || result.errors) {
+    throw new Error(result.errors?.[0]?.message ?? 'Error fetching featured products')
+  }
+
+  return result.data?.Products?.docs ?? []
 }
