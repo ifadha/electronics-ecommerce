@@ -2,7 +2,7 @@ import type { Page } from '../payload-types'
 
 export const productsPage: Omit<Page, 'updatedAt' | 'createdAt' | 'id'> = {
   title: 'Shop',
-  slug: 'products',
+  slug: 'shop',
   _status: 'published',
   meta: {
     title: 'Shop all products',

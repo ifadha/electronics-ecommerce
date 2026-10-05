@@ -172,6 +172,15 @@ export const seed = async (payload: Payload): Promise<void> => {
 
   const productsPageDoc = await payload.create({
     collection: 'pages',
+    data: {
+      ...productsPage,
+      title: 'Products',
+      slug: 'products',
+    },
+  })
+
+  const shopPageDoc = await payload.create({
+    collection: 'pages',
     data: productsPage,
   })
 
@@ -222,7 +231,7 @@ export const seed = async (payload: Payload): Promise<void> => {
             type: 'reference',
             reference: {
               relationTo: 'pages',
-              value: productsPageDoc.id,
+              value: shopPageDoc.id,
             },
             label: 'Shop',
           },
