@@ -40,6 +40,36 @@ dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
 })
 
+const databaseURL = process.env.DATABASE_URL?.trim()
+
+if (typeof window === 'undefined') {
+  if (process.env.DATABASE_URI?.trim()) {
+    throw new Error('DATABASE_URI is no longer supported. Configure DATABASE_URL instead.')
+  }
+
+  if (!databaseURL) {
+    throw new Error('DATABASE_URL is required. Set it to the MongoDB connection string.')
+  }
+
+  try {
+    const parsedDatabaseURL = new URL(databaseURL)
+
+    if (
+      !['mongodb:', 'mongodb+srv:'].includes(parsedDatabaseURL.protocol) ||
+      !parsedDatabaseURL.hostname
+    ) {
+      throw new Error()
+    }
+
+    decodeURIComponent(parsedDatabaseURL.username)
+    decodeURIComponent(parsedDatabaseURL.password)
+  } catch {
+    throw new Error(
+      'DATABASE_URL must be a valid MongoDB connection string with URL-encoded credentials.',
+    )
+  }
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -78,7 +108,7 @@ export default buildConfig({
   editor: slateEditor({}), // editor-config
   // database-adapter-config-start
   db: mongooseAdapter({
-    url: process.env.DATABASE_URI || process.env.DATABASE_URL,
+    url: databaseURL,
   }),
   // database-adapter-config-end
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,

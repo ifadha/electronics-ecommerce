@@ -2,6 +2,7 @@
   "name": "@payloadcms/template-ecommerce",
   "description": "E-commerce template for Payload",
   "version": "1.0.0",
+  "packageManager": "yarn@1.22.22",
   "main": "dist/server.js",
   "license": "MIT",
   "scripts": {
